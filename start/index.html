@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smarter Choice Meds — Medical Weight Loss Eligibility Check</title>
+<meta name="description" content="See if you're a candidate for doctor-prescribed GLP-1 weight loss (Semaglutide & Tirzepatide) in about 60 seconds. Free, no obligation.">
+<meta name="robots" content="noindex">
+<style>
+:root{
+  --ink:#26314f;
+  --blue:#5b8def;
+  --blue2:#7aa5f6;
+  --blue-soft:#eaf1fe;
+  --lav:#9b8cf0;
+  --mint:#5ecfb6;
+  --peach:#ff9f8c;
+  --amber:#ffc04d;
+  --bg:#f6f9fd;
+  --card:#ffffff;
+  --line:#e8eef7;
+  --text:#43506b;
+  --muted:#8592ab;
+  --shadow:0 10px 30px rgba(38,49,79,.06);
+  --shadow-lg:0 22px 55px rgba(38,49,79,.12);
+  --radius:18px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--text);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased}
+a{text-decoration:none;color:inherit}
+
+/* Top bar */
+.topbar{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
+.topbar .inner{max-width:1040px;margin:0 auto;padding:16px 22px;display:flex;align-items:center;justify-content:center;position:relative}
+.brand{display:flex;align-items:center;gap:11px;font-weight:800;font-size:19px;color:var(--ink)}
+.brand .mark{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--blue),var(--lav));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:16px;box-shadow:0 8px 16px rgba(91,141,239,.35)}
+.brand b{color:var(--blue);font-weight:800}
+.secure{position:absolute;right:22px;top:50%;transform:translateY(-50%);font-size:12.5px;color:var(--muted);font-weight:600;display:flex;align-items:center;gap:6px}
+@media(max-width:640px){.secure{display:none}}
+
+/* Stepper */
+.stepper{max-width:1040px;margin:0 auto;padding:20px 22px 0;display:flex;align-items:center;gap:0}
+.st{display:flex;align-items:center;flex:1}
+.st:last-child{flex:0 0 auto}
+.st .dot{width:26px;height:26px;border-radius:50%;border:2px solid var(--line);background:#fff;display:flex;align-items:center;justify-content:center;flex:0 0 auto;transition:.3s}
+.st .dot i{width:9px;height:9px;border-radius:50%;background:transparent;transition:.3s}
+.st .lbl{font-size:13.5px;font-weight:700;color:var(--muted);margin-left:9px;white-space:nowrap;transition:.3s}
+.st .bar{flex:1;height:2px;background:var(--line);margin:0 12px;transition:.3s}
+.st.active .dot{border-color:var(--blue)}
+.st.active .dot i{background:var(--blue)}
+.st.active .lbl{color:var(--ink)}
+.st.done .dot{border-color:var(--mint);background:var(--mint)}
+.st.done .dot i{background:#fff}
+.st.done .bar{background:var(--mint)}
+@media(max-width:720px){.st .lbl{display:none}.st .bar{margin:0 6px}}
+
+/* Card */
+.wrap{max-width:640px;margin:0 auto;padding:34px 22px 40px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:38px 40px}
+@media(max-width:640px){.card{padding:28px 22px}}
+.back{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-weight:600;font-size:14px;margin-bottom:18px;cursor:pointer;background:none;border:none}
+.back:hover{color:var(--blue)}
+.kick{font-size:13px;font-weight:800;color:var(--blue);letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px}
+h1{font-size:30px;line-height:1.2;color:var(--ink);font-weight:800;letter-spacing:-.5px;margin-bottom:12px}
+h1 span{color:var(--blue)}
+.lead{font-size:16px;color:var(--muted);margin-bottom:26px}
+@media(max-width:640px){h1{font-size:24px}}
+
+/* Options */
+.opts{display:grid;gap:12px}
+.opt{display:flex;align-items:center;gap:14px;padding:17px 20px;border:1.5px solid var(--line);border-radius:14px;background:#fff;cursor:pointer;font-size:16px;font-weight:600;color:var(--ink);transition:.15s;text-align:left;width:100%}
+.opt:hover{border-color:var(--blue);background:var(--blue-soft)}
+.opt.sel{border-color:var(--blue);background:var(--blue-soft);box-shadow:0 0 0 3px rgba(91,141,239,.14)}
+.opt .ic{width:34px;height:34px;border-radius:10px;background:var(--blue-soft);display:flex;align-items:center;justify-content:center;font-size:18px;flex:0 0 auto}
+.opt.sel .ic{background:#fff}
+.opt small{display:block;font-size:13px;font-weight:500;color:var(--muted);margin-top:2px}
+
+/* Inputs */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:520px){.grid2{grid-template-columns:1fr}}
+label.fl{display:block;font-size:14px;font-weight:700;color:var(--ink);margin:14px 0 7px}
+.inp{width:100%;padding:14px 15px;border:1.5px solid var(--line);border-radius:12px;font-size:16px;color:var(--ink);background:#fff;font-family:inherit}
+.inp:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(91,141,239,.14)}
+select.inp{appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238592ab' stroke-width='3'><path d='M6 9l6 6 6-6'/></svg>");background-repeat:no-repeat;background-position:right 15px center}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:16px 24px;border-radius:99px;border:none;background:linear-gradient(135deg,var(--blue),var(--lav));color:#fff;font-size:17px;font-weight:800;cursor:pointer;box-shadow:0 12px 26px rgba(91,141,239,.32);transition:.15s;font-family:inherit}
+.btn:hover{transform:translateY(-1px);box-shadow:0 16px 32px rgba(91,141,239,.4)}
+.btn[disabled]{opacity:.6;cursor:default;transform:none}
+.btn.ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line);box-shadow:none}
+.btn.ghost:hover{border-color:var(--blue);color:var(--blue)}
+.btnrow{display:flex;gap:12px;margin-top:24px}
+.mt{margin-top:24px}
+.err{color:#d64d4d;font-size:14px;font-weight:600;margin-top:10px;display:none}
+
+/* BMI gate / result */
+.center{text-align:center}
+.bigcirc{width:96px;height:96px;border-radius:50%;margin:0 auto 20px;display:flex;align-items:center;justify-content:center;font-size:44px}
+.ok{background:var(--blue-soft)}
+.warn{background:#fff5e9}
+.bmi-val{font-size:15px;color:var(--muted);margin-top:6px}
+.bmi-val b{color:var(--ink);font-size:17px}
+
+/* result cards */
+.plan{border:1.5px solid var(--line);border-radius:14px;padding:18px 20px;text-align:left;margin-top:16px;display:flex;align-items:center;gap:16px}
+.plan .pic{width:52px;height:52px;border-radius:12px;background:linear-gradient(135deg,var(--blue),var(--lav));display:flex;align-items:center;justify-content:center;font-size:24px;flex:0 0 auto}
+.plan h3{font-size:17px;color:var(--ink);margin-bottom:2px}
+.plan p{font-size:14px;color:var(--muted)}
+.plan .price{margin-left:auto;text-align:right;font-weight:800;color:var(--ink);font-size:18px;white-space:nowrap}
+.plan .price small{display:block;font-weight:500;color:var(--muted);font-size:12px}
+
+/* trust footer */
+.trust{max-width:640px;margin:6px auto 0;padding:0 22px;text-align:center}
+.stars{color:var(--amber);font-size:17px;letter-spacing:2px}
+.trust p{font-size:13px;color:var(--muted);margin-top:4px}
+.trust .row{display:flex;justify-content:center;gap:22px;flex-wrap:wrap;margin-top:14px;font-size:12.5px;color:var(--muted);font-weight:600}
+.trust .row span{display:flex;align-items:center;gap:6px}
+
+/* legal */
+.legal{max-width:640px;margin:26px auto 40px;padding:0 22px;font-size:11.5px;color:#9aa6bd;line-height:1.7;text-align:center}
+.legal b{color:var(--muted)}
+.legal a{color:var(--muted);text-decoration:underline}
+
+.consent{display:flex;gap:10px;align-items:flex-start;margin-top:18px;font-size:12.5px;color:var(--muted);line-height:1.55}
+.consent input{margin-top:3px;flex:0 0 auto;width:16px;height:16px;accent-color:var(--blue)}
+.fade{animation:fade .3s ease}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="inner">
+    <a href="https://anirudhatalmale6-alt.github.io/smarterchoicemeds-lander/" class="brand"><span class="mark">SC</span>Smarter <b>Choice</b> Meds</a>
+    <span class="secure">🔒 Secure &amp; confidential</span>
+  </div>
+</div>
+
+<!-- Stepper -->
+<div class="stepper" id="stepper">
+  <div class="st" data-stage="start"><span class="dot"><i></i></span><span class="lbl">Start</span><span class="bar"></span></div>
+  <div class="st" data-stage="prelim"><span class="dot"><i></i></span><span class="lbl">Preliminary</span><span class="bar"></span></div>
+  <div class="st" data-stage="health"><span class="dot"><i></i></span><span class="lbl">Health</span><span class="bar"></span></div>
+  <div class="st" data-stage="details"><span class="dot"><i></i></span><span class="lbl">Details</span><span class="bar"></span></div>
+  <div class="st" data-stage="elig"><span class="dot"><i></i></span><span class="lbl">Eligibility</span></div>
+</div>
+
+<div class="wrap">
+  <div class="card fade" id="card"><!-- steps render here --></div>
+</div>
+
+<div class="trust" id="trust">
+  <div class="stars">★★★★★</div>
+  <p><b style="color:var(--ink)">Excellent 4.8</b> · thousands started their journey with us</p>
+  <div class="row">
+    <span>🇺🇸 US-licensed providers</span>
+    <span>🔒 HIPAA-compliant</span>
+    <span>💳 No membership fees</span>
+  </div>
+</div>
+
+<div class="legal">
+  <p><b>Not medical advice.</b> This eligibility check is for informational purposes only and does not establish a doctor-patient relationship. Prescriptions are issued only where clinically appropriate following an evaluation by a licensed provider. Compounded GLP-1 medications are not FDA-approved and are not reviewed by the FDA for safety or effectiveness. Individual results vary. By continuing you agree to be contacted about your inquiry.</p>
+  <p style="margin-top:10px">© 2026 Smarter Choice Meds. All rights reserved.</p>
+</div>
+
+<script>
+/* ============ LEAD DELIVERY ============
+   Paste your Google Apps Script Web App URL (ends in /exec) between the quotes.
+   Leave empty to run in PREVIEW mode (no lead is sent).           */
+var ENDPOINT = '';
+/* ======================================= */
+
+var data = {};   // collected answers
+var stack = [];   // history for back button
+
+/* ---- US states ---- */
+var STATES = ["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"];
+
+/* ---- step definitions ----
+   type: options | bmi | dob | contact | result | gate
+*/
+var STEPS = [
+  { id:'bmi', stage:'start', type:'bmi',
+    kick:'Free eligibility check',
+    h:'Reach your goal weight <span>without restrictive diets.</span>',
+    lead:"Let's calculate your BMI to make sure you're a good candidate for medical weight loss." },
+
+  { id:'goal', stage:'prelim', type:'options', key:'goal',
+    h:'How much weight would you like to lose?',
+    opts:[
+      {ic:'🎯',t:'10 – 20 lbs'},
+      {ic:'🎯',t:'20 – 50 lbs'},
+      {ic:'🎯',t:'50 lbs or more'},
+      {ic:'🤔',t:"I'm not sure yet"}
+    ]},
+
+  { id:'med', stage:'prelim', type:'options', key:'medication',
+    h:'Which medication are you interested in?',
+    lead:'A licensed provider will confirm the best fit for you.',
+    opts:[
+      {ic:'💧',t:'Semaglutide', s:'The active ingredient in Ozempic® & Wegovy®'},
+      {ic:'💉',t:'Tirzepatide', s:'The active ingredient in Mounjaro® & Zepbound®'},
+      {ic:'🩺',t:'Not sure — recommend for me'}
+    ]},
+
+  { id:'format', stage:'prelim', type:'options', key:'format',
+    h:'Do you have a preferred format?',
+    opts:[
+      {ic:'💧',t:'Oral drops', s:'Taken under the tongue — no needles'},
+      {ic:'💉',t:'Injections', s:'Once-weekly self-injection'},
+      {ic:'✨',t:'Whichever works best for me'}
+    ]},
+
+  { id:'conditions', stage:'health', type:'options', key:'conditions',
+    h:'Do any of these apply to you?',
+    lead:'This helps the provider keep you safe. Choose the one that fits best.',
+    opts:[
+      {ic:'✅',t:'None of these apply'},
+      {ic:'⚠️',t:'Type 2 diabetes'},
+      {ic:'⚠️',t:'Personal/family history of thyroid cancer (MEN2)'},
+      {ic:'⚠️',t:'History of pancreatitis'}
+    ]},
+
+  { id:'history', stage:'health', type:'options', key:'glp1_history',
+    h:'Have you used a GLP-1 medication before?',
+    opts:[
+      {ic:'🟢',t:'Yes — I take one now'},
+      {ic:'🕐',t:'Yes — in the past'},
+      {ic:'🆕',t:'No — never'}
+    ]},
+
+  { id:'pregnancy', stage:'health', type:'options', key:'pregnancy',
+    h:'Are you currently pregnant, breastfeeding, or planning a pregnancy?',
+    opts:[
+      {ic:'✅',t:'No'},
+      {ic:'🤰',t:'Yes'}
+    ]},
+
+  { id:'dob', stage:'details', type:'dob',
+    h:'What is your date of birth?',
+    lead:'You must be 18 or older to qualify.' },
+
+  { id:'sex', stage:'details', type:'options', key:'sex',
+    h:'What is your sex assigned at birth?',
+    opts:[ {ic:'♀️',t:'Female'}, {ic:'♂️',t:'Male'} ]},
+
+  { id:'state', stage:'details', type:'state', key:'state',
+    h:'What state do you live in?',
+    lead:'We connect you with providers licensed in your state.' },
+
+  { id:'contact', stage:'elig', type:'contact',
+    h:'You\'re almost done!',
+    lead:'Enter your details to see your results and get your free plan review.' },
+
+  { id:'result', stage:'elig', type:'result' }
+];
+
+var cur = 0;
+
+function stageIndex(s){ return ['start','prelim','health','details','elig'].indexOf(s); }
+
+function renderStepper(){
+  var stEls = document.querySelectorAll('#stepper .st');
+  var active = stageIndex(STEPS[cur].stage);
+  stEls.forEach(function(el,i){
+    el.classList.remove('active','done');
+    if(i<active) el.classList.add('done');
+    else if(i===active) el.classList.add('active');
+  });
+}
+
+function go(next){ stack.push(cur); cur=next; render(); window.scrollTo({top:0,behavior:'smooth'}); }
+function back(){ if(stack.length){ cur=stack.pop(); render(); window.scrollTo({top:0,behavior:'smooth'}); } }
+
+function pick(el, key, val){
+  var sibs = el.parentNode.querySelectorAll('.opt');
+  sibs.forEach(function(s){s.classList.remove('sel')});
+  el.classList.add('sel');
+  data[key]=val;
+  setTimeout(function(){ advance(); }, 240);
+}
+
+function advance(){
+  // auto-advance to next step (skip result until submit)
+  if(cur < STEPS.length-2){ go(cur+1); }
+}
+
+function h(html){ return html; }
+
+function render(){
+  renderStepper();
+  var s = STEPS[cur];
+  var c = document.getElementById('card');
+  var showTrust = (s.type!=='result');
+  document.getElementById('trust').style.display = showTrust ? '' : 'none';
+  var backBtn = (stack.length && s.type!=='result') ? '<button class="back" onclick="back()">← Back</button>' : '';
+  var head = (s.kick?('<div class="kick">'+s.kick+'</div>'):'') +
+             (s.h?('<h1>'+s.h+'</h1>'):'') +
+             (s.lead?('<p class="lead">'+s.lead+'</p>'):'');
+
+  if(s.type==='options'){
+    var o='<div class="opts">';
+    s.opts.forEach(function(op){
+      o+='<button class="opt'+(data[s.key]===op.t?' sel':'')+'" onclick="pick(this,\''+s.key+'\',\''+op.t.replace(/'/g,"\\'")+'\')">'+
+         '<span class="ic">'+op.ic+'</span><span>'+op.t+(op.s?'<small>'+op.s+'</small>':'')+'</span></button>';
+    });
+    o+='</div>';
+    c.innerHTML = backBtn+head+o;
+  }
+
+  else if(s.type==='bmi'){
+    c.innerHTML = backBtn+head+
+      '<div class="grid2">'+
+        '<div><label class="fl">Height — feet</label><select class="inp" id="ft"><option value="">Select feet</option><option>4</option><option>5</option><option>6</option><option>7</option></select></div>'+
+        '<div><label class="fl">Height — inches</label><select class="inp" id="in"><option value="">Select inches</option>'+[0,1,2,3,4,5,6,7,8,9,10,11].map(function(n){return '<option>'+n+'</option>'}).join('')+'</select></div>'+
+      '</div>'+
+      '<label class="fl">Weight (in lbs)</label><input class="inp" id="wt" type="number" inputmode="numeric" placeholder="e.g. 210">'+
+      '<div class="err" id="bmiErr">Please enter your height and weight to continue.</div>'+
+      '<button class="btn mt" onclick="calcBMI()">Next →</button>';
+  }
+
+  else if(s.type==='gate'){
+    c.innerHTML =
+      '<div class="center"><div class="bigcirc warn">⚖️</div>'+
+      '<h1>Let\'s double-check your numbers</h1>'+
+      '<p class="lead">GLP-1 programs are generally intended for a BMI of 27 or higher. Your estimated BMI is <b>'+data.intake_bmi+'</b>. You can review your height and weight, or continue if they\'re correct.</p>'+
+      '<div class="btnrow"><button class="btn ghost" onclick="back()">← Check again</button>'+
+      '<button class="btn" onclick="advance()">My answers are correct →</button></div></div>';
+  }
+
+  else if(s.type==='dob'){
+    c.innerHTML = backBtn+head+
+      '<input class="inp" id="dob" type="date" max="2008-12-31">'+
+      '<div class="err" id="dobErr">Please enter a valid date of birth (18+).</div>'+
+      '<button class="btn mt" onclick="saveDOB()">Next →</button>';
+  }
+
+  else if(s.type==='state'){
+    c.innerHTML = backBtn+head+
+      '<select class="inp" id="stt"><option value="">Select your state</option>'+STATES.map(function(x){return '<option'+(data.state===x?' selected':'')+'>'+x+'</option>'}).join('')+'</select>'+
+      '<div class="err" id="sttErr">Please select your state.</div>'+
+      '<button class="btn mt" onclick="saveState()">Next →</button>';
+  }
+
+  else if(s.type==='contact'){
+    c.innerHTML = backBtn+head+
+      '<form id="leadForm" onsubmit="return submitLead(event)">'+
+        '<div class="grid2">'+
+          '<div><label class="fl">First name</label><input class="inp" name="first_name" required></div>'+
+          '<div><label class="fl">Last name</label><input class="inp" name="last_name" required></div>'+
+        '</div>'+
+        '<label class="fl">Email</label><input class="inp" name="email" type="email" required placeholder="you@email.com">'+
+        '<label class="fl">Phone</label><input class="inp" name="phone" type="tel" required placeholder="(555) 555-5555">'+
+        '<label class="consent"><input type="checkbox" required>'+
+          'I agree to be contacted by Smarter Choice Meds by phone, text, and email about my request, including via automated technology. Consent is not a condition of purchase. Message &amp; data rates may apply. I have read the medical disclaimer above.'+
+        '</label>'+
+        '<button class="btn mt" id="submitBtn" type="submit">See my results →</button>'+
+      '</form>';
+  }
+
+  else if(s.type==='result'){
+    var raw = (data.intake_weight||'').toString().replace(/[^0-9]/g,'');
+    var recPrice = (data.format && data.format.indexOf('Inject')>-1) ? '$199/mo' : '$147/mo';
+    var recName = (data.format && data.format.indexOf('Inject')>-1) ? 'Injection plan' : 'Oral drops plan';
+    var recDesc = (data.medication && data.medication.indexOf('Tirze')>-1) ? 'Tirzepatide program' :
+                  (data.medication && data.medication.indexOf('Sema')>-1) ? 'Semaglutide program' : 'GLP-1 program (provider will confirm)';
+    c.innerHTML =
+      '<div class="center"><div class="bigcirc ok">🎉</div>'+
+      '<h1>Good news, '+(data.first_name||'')+' — you\'re a candidate!</h1>'+
+      '<p class="lead">Based on your answers, you may be eligible for a doctor-prescribed GLP-1 weight-loss program. A licensed provider will review your information and reach out shortly. No obligation, and nothing is charged today.</p></div>'+
+      '<div class="plan"><span class="pic">💊</span><div><h3>'+recDesc+'</h3><p>'+recName+' · reviewed by a US-licensed provider</p></div><span class="price">'+recPrice+'<small>as low as</small></span></div>'+
+      '<div class="mt center"><p style="font-size:14px;color:var(--muted)">We\'ve received your request. Keep an eye on your phone and email — we\'ll be in touch soon.</p></div>';
+    // fire confetti-free celebratory state; stepper all done
+    document.querySelectorAll('#stepper .st').forEach(function(el){el.classList.remove('active');el.classList.add('done')});
+  }
+
+  c.classList.remove('fade'); void c.offsetWidth; c.classList.add('fade');
+}
+
+/* ---- validators ---- */
+function calcBMI(){
+  var ft=parseInt(document.getElementById('ft').value,10);
+  var inch=parseInt(document.getElementById('in').value,10);
+  var wt=parseFloat(document.getElementById('wt').value);
+  if(isNaN(ft)||isNaN(inch)||isNaN(wt)||wt<50){ document.getElementById('bmiErr').style.display='block'; return; }
+  var totalIn=ft*12+inch;
+  var bmi=(wt/(totalIn*totalIn))*703;
+  bmi=Math.round(bmi*10)/10;
+  data.intake_feet=ft; data.intake_inches=inch; data.intake_weight=wt; data.intake_bmi=bmi;
+  if(bmi<27){
+    // insert soft gate as next step (once)
+    if(STEPS[cur+1].type!=='gate'){
+      STEPS.splice(cur+1,0,{id:'gate',stage:'start',type:'gate'});
+    }
+    go(cur+1);
+  } else {
+    advance();
+  }
+}
+
+function saveDOB(){
+  var v=document.getElementById('dob').value;
+  if(!v){ document.getElementById('dobErr').style.display='block'; return; }
+  var d=new Date(v); var age=(new Date(2026,6,28)-d)/(365.25*24*3600*1000);
+  if(isNaN(d.getTime())||age<18||age>110){ document.getElementById('dobErr').style.display='block'; return; }
+  data.dob=v; advance();
+}
+
+function saveState(){
+  var v=document.getElementById('stt').value;
+  if(!v){ document.getElementById('sttErr').style.display='block'; return; }
+  data.state=v; advance();
+}
+
+function submitLead(e){
+  e.preventDefault();
+  var f=document.getElementById('leadForm');
+  var fd=new FormData(f);
+  fd.append('goal', data.goal||'');
+  fd.append('medication', data.medication||'');
+  fd.append('format', data.format||'');
+  fd.append('conditions', data.conditions||'');
+  fd.append('glp1_history', data.glp1_history||'');
+  fd.append('pregnancy', data.pregnancy||'');
+  fd.append('dob', data.dob||'');
+  fd.append('sex', data.sex||'');
+  fd.append('state', data.state||'');
+  fd.append('height_ft', data.intake_feet||'');
+  fd.append('height_in', data.intake_inches||'');
+  fd.append('weight_lbs', data.intake_weight||'');
+  fd.append('bmi', data.intake_bmi||'');
+  fd.append('_subject', 'New Smarter Choice Meds Lead');
+  fd.append('page', 'Smarter Choice Meds — Weight Loss Intake');
+  // capture name for result screen
+  data.first_name = fd.get('first_name');
+
+  var btn=document.getElementById('submitBtn');
+  btn.textContent='Reviewing your answers…'; btn.disabled=true;
+
+  function done(){ cur=STEPS.length-1; render(); window.scrollTo({top:0,behavior:'smooth'}); }
+
+  if(!ENDPOINT){ setTimeout(done,800); return false; }
+  fetch(ENDPOINT,{method:'POST',body:fd}).then(function(){done();}).catch(function(){done();});
+  return false;
+}
+
+render();
+</script>
+</body>
+</html>
