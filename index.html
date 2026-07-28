@@ -585,7 +585,7 @@ var STATES=["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Con
 var ss=document.getElementById('stateSel');
 STATES.forEach(function(s){var o=document.createElement('option');o.textContent=s;ss.appendChild(o);});
 
-function openForm(){document.getElementById('modal').classList.add('show');document.body.style.overflow='hidden';}
+function openForm(){window.location.href='start/';}
 function closeForm(){document.getElementById('modal').classList.remove('show');document.body.style.overflow='';}
 document.getElementById('modal').addEventListener('click',function(e){if(e.target===this)closeForm();});
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeForm();});
