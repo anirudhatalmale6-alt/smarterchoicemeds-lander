@@ -110,6 +110,26 @@ select.inp{appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xm
 .plan .price{margin-left:auto;text-align:right;font-weight:800;color:var(--ink);font-size:18px;white-space:nowrap}
 .plan .price small{display:block;font-weight:500;color:var(--muted);font-size:12px}
 
+/* plan cart */
+.cart{display:grid;gap:12px}
+.planc{position:relative;display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:18px 20px;border:1.5px solid var(--line);border-radius:16px;background:#fff;cursor:pointer;transition:.15s}
+.planc:hover{border-color:var(--blue)}
+.planc.sel{border-color:var(--blue);background:var(--blue-soft);box-shadow:0 0 0 3px rgba(91,141,239,.14)}
+.planc .pradio{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);flex:0 0 auto;display:flex;align-items:center;justify-content:center;transition:.15s}
+.planc.sel .pradio{border-color:var(--blue)}
+.planc .pradio i{width:11px;height:11px;border-radius:50%;background:transparent;transition:.15s}
+.planc.sel .pradio i{background:var(--blue)}
+.planc .pinfo{flex:1}
+.planc .pmo{font-size:17px;font-weight:800;color:var(--ink)}
+.planc .psub{font-size:13px;color:var(--muted);margin-top:1px}
+.planc .psave{display:inline-block;margin-top:6px;font-size:12px;font-weight:800;color:var(--mint);background:rgba(94,207,182,.14);padding:3px 9px;border-radius:99px}
+.planc .pprice{text-align:right;white-space:nowrap}
+.planc .pnum{font-size:24px;font-weight:800;color:var(--ink)}
+.planc .pper{font-size:14px;font-weight:700;color:var(--muted)}
+.planc .pprice small{display:block;font-size:11.5px;color:var(--muted);font-weight:500;margin-top:2px}
+.planc .ptag{position:absolute;top:-11px;left:52px;background:linear-gradient(135deg,var(--blue),var(--lav));color:#fff;font-size:11px;font-weight:800;padding:4px 12px;border-radius:99px;letter-spacing:.3px;box-shadow:0 6px 14px rgba(91,141,239,.32)}
+@media(max-width:480px){.planc{padding:16px 15px;gap:10px}.planc .pnum{font-size:20px}.planc .pmo{font-size:15px}.planc .psub{font-size:12px}}
+
 /* trust footer */
 .trust{max-width:640px;margin:6px auto 0;padding:0 22px;text-align:center}
 .stars{color:var(--amber);font-size:17px;letter-spacing:2px}
@@ -243,7 +263,7 @@ var STEPS = [
     lead:'You must be 18 or older to qualify.' },
 
   { id:'sex', stage:'details', type:'options', key:'sex',
-    h:'What is your sex assigned at birth?',
+    h:'Are you male or female?',
     opts:[ {ic:'♀️',t:'Female'}, {ic:'♂️',t:'Male'} ]},
 
   { id:'state', stage:'details', type:'state', key:'state',
@@ -254,7 +274,8 @@ var STEPS = [
     h:'You\'re almost done!',
     lead:'Enter your details to see your results and get your free plan review.' },
 
-  { id:'result', stage:'elig', type:'result' }
+  { id:'result', stage:'elig', type:'result' },
+  { id:'confirm', stage:'elig', type:'confirm' }
 ];
 
 var cur = 0;
@@ -361,18 +382,41 @@ function render(){
   }
 
   else if(s.type==='result'){
-    var raw = (data.intake_weight||'').toString().replace(/[^0-9]/g,'');
-    var recPrice = (data.format && data.format.indexOf('Inject')>-1) ? '$199/mo' : '$147/mo';
-    var recName = (data.format && data.format.indexOf('Inject')>-1) ? 'Injection plan' : 'Oral drops plan';
-    var recDesc = (data.medication && data.medication.indexOf('Tirze')>-1) ? 'Tirzepatide program' :
-                  (data.medication && data.medication.indexOf('Sema')>-1) ? 'Semaglutide program' : 'GLP-1 program (provider will confirm)';
+    var pk = getPlans();
+    var cards='';
+    pk.plans.forEach(function(pl,i){
+      var billed = pl.months===1 ? '$'+pl.total+' billed monthly' : '$'+pl.total+' billed every '+pl.months+' months';
+      var saveTxt = pl.save>0 ? 'Save $'+pl.save : '';
+      cards+='<button class="planc'+(data.plan_id===pl.id?' sel':'')+'" onclick="selectPlan(this,\''+pl.id+'\')">'+
+        (pl.tag?'<span class="ptag">'+pl.tag+'</span>':'')+
+        '<div class="pradio"><i></i></div>'+
+        '<div class="pinfo"><div class="pmo">'+pl.months+'-Month Plan</div>'+
+        '<div class="psub">'+pk.medLabel+' · '+pk.fmt+'</div>'+
+        (saveTxt?'<div class="psave">'+saveTxt+'</div>':'')+'</div>'+
+        '<div class="pprice"><span class="pnum">$'+pl.per+'</span><span class="pper">/mo</span><small>'+billed+'</small></div>'+
+        '</button>';
+    });
     c.innerHTML =
       '<div class="center"><div class="bigcirc ok">🎉</div>'+
       '<h1>Good news, '+(data.first_name||'')+' — you\'re a candidate!</h1>'+
-      '<p class="lead">Based on your answers, you may be eligible for a doctor-prescribed GLP-1 weight-loss program. A licensed provider will review your information and reach out shortly. No obligation, and nothing is charged today.</p></div>'+
-      '<div class="plan"><span class="pic">💊</span><div><h3>'+recDesc+'</h3><p>'+recName+' · reviewed by a US-licensed provider</p></div><span class="price">'+recPrice+'<small>as low as</small></span></div>'+
-      '<div class="mt center"><p style="font-size:14px;color:var(--muted)">We\'ve received your request. Keep an eye on your phone and email — we\'ll be in touch soon.</p></div>';
-    // fire confetti-free celebratory state; stepper all done
+      '<p class="lead">Based on your answers, you may be eligible for a doctor-prescribed '+pk.medLabel+' program. Choose the plan that fits you best below — a US-licensed provider reviews every order before anything ships.</p></div>'+
+      '<h2 style="font-size:19px;color:var(--ink);margin:6px 0 4px">Choose your plan</h2>'+
+      '<p style="font-size:13.5px;color:var(--muted);margin-bottom:16px">Longer plans lower your monthly cost. Cancel anytime. Nothing is charged until a provider approves your prescription.</p>'+
+      '<div class="cart">'+cards+'</div>'+
+      '<button class="btn mt" id="checkoutBtn" onclick="checkout()">Continue with '+(function(){var s=pk.plans.filter(function(x){return x.id===data.plan_id})[0];return s?s.months+'-month plan':'my plan';})()+' →</button>'+
+      '<p style="font-size:12px;color:var(--muted);text-align:center;margin-top:12px">🔒 Secure checkout · HSA/FSA eligible · No insurance required</p>';
+    document.querySelectorAll('#stepper .st').forEach(function(el){el.classList.remove('active');el.classList.add('done')});
+  }
+
+  else if(s.type==='confirm'){
+    var pk2=getPlans();
+    var chosen=pk2.plans.filter(function(x){return x.id===data.plan_id})[0]||pk2.plans[0];
+    c.innerHTML =
+      '<div class="center"><div class="bigcirc ok">✅</div>'+
+      '<h1>You\'re all set, '+(data.first_name||'')+'!</h1>'+
+      '<p class="lead">Your '+chosen.months+'-month '+pk2.medLabel+' plan is reserved. A US-licensed provider will review your information and our care team will reach out shortly to confirm your prescription, finalize secure payment, and arrange shipping. Nothing has been charged yet.</p></div>'+
+      '<div class="plan"><span class="pic">💊</span><div><h3>'+chosen.months+'-Month '+pk2.medLabel+' Plan</h3><p>'+pk2.fmt+' · reviewed by a US-licensed provider</p></div><span class="price">$'+chosen.per+'/mo<small>$'+chosen.total+' total</small></span></div>'+
+      '<div class="mt center"><p style="font-size:14px;color:var(--muted)">Keep an eye on your phone and email — we\'ll be in touch very soon. 💙</p></div>';
     document.querySelectorAll('#stepper .st').forEach(function(el){el.classList.remove('active');el.classList.add('done')});
   }
 
@@ -433,17 +477,58 @@ function submitLead(e){
   fd.append('bmi', data.intake_bmi||'');
   fd.append('_subject', 'New Smarter Choice Meds Lead');
   fd.append('page', 'Smarter Choice Meds — Weight Loss Intake');
-  // capture name for result screen
-  data.first_name = fd.get('first_name');
+  fd.append('stage', 'qualified_lead');
+  // keep contact fields for the checkout step
+  data.first_name = fd.get('first_name'); data.last_name = fd.get('last_name');
+  data.email = fd.get('email'); data.phone = fd.get('phone');
+  if(!data.plan_id) data.plan_id='3'; // default to Most Popular
 
   var btn=document.getElementById('submitBtn');
   btn.textContent='Reviewing your answers…'; btn.disabled=true;
 
-  function done(){ cur=STEPS.length-1; render(); window.scrollTo({top:0,behavior:'smooth'}); }
+  function done(){ cur=STEPS.findIndex(function(s){return s.id==='result'}); render(); window.scrollTo({top:0,behavior:'smooth'}); }
 
   if(!ENDPOINT){ setTimeout(done,800); return false; }
   fetch(ENDPOINT,{method:'POST',body:fd}).then(function(){done();}).catch(function(){done();});
   return false;
+}
+
+/* ---- plan cart ---- */
+function getPlans(){
+  var inj = (data.format && data.format.indexOf('Inject')>-1);
+  var base = inj ? 199 : 147;
+  var medLabel = (data.medication && data.medication.indexOf('Tirze')>-1) ? 'Tirzepatide' :
+                 (data.medication && data.medication.indexOf('Sema')>-1) ? 'Semaglutide' : 'GLP-1';
+  var fmt = inj ? 'Injections' : 'Oral drops';
+  function mk(months,mult){ var per=Math.round(base*mult); var total=per*months; return {id:String(months),months:months,per:per,total:total,save:(base*months-total)}; }
+  var plans=[ mk(1,1), mk(3,0.88), mk(6,0.78) ];
+  plans[1].tag='Most Popular'; plans[2].tag='Best Value';
+  return {medLabel:medLabel, fmt:fmt, plans:plans};
+}
+function selectPlan(el,id){
+  el.parentNode.querySelectorAll('.planc').forEach(function(x){x.classList.remove('sel')});
+  el.classList.add('sel');
+  data.plan_id=id;
+  var pk=getPlans(); var s=pk.plans.filter(function(x){return x.id===id})[0];
+  var b=document.getElementById('checkoutBtn'); if(b&&s) b.textContent='Continue with '+s.months+'-month plan →';
+}
+function checkout(){
+  if(!data.plan_id) data.plan_id='3';
+  var pk=getPlans(); var s=pk.plans.filter(function(x){return x.id===data.plan_id})[0];
+  var b=document.getElementById('checkoutBtn'); if(b){ b.textContent='Reserving your plan…'; b.disabled=true; }
+  data.selected_plan = s.months+'-month '+pk.medLabel+' ('+pk.fmt+')';
+  data.plan_total = '$'+s.total; data.plan_monthly='$'+s.per+'/mo';
+  function go2(){ cur=STEPS.findIndex(function(st){return st.id==='confirm'}); render(); window.scrollTo({top:0,behavior:'smooth'}); }
+  if(!ENDPOINT){ setTimeout(go2,600); return; }
+  // second post: attach chosen plan to the same lead
+  var fd=new FormData();
+  fd.append('first_name',data.first_name||''); fd.append('last_name',data.last_name||'');
+  fd.append('email',data.email||''); fd.append('phone',data.phone||''); fd.append('state',data.state||'');
+  fd.append('selected_plan',data.selected_plan); fd.append('plan_total',data.plan_total); fd.append('plan_monthly',data.plan_monthly);
+  fd.append('medication',data.medication||''); fd.append('format',data.format||'');
+  fd.append('_subject','Plan Selected — Smarter Choice Meds'); fd.append('stage','plan_selected');
+  fd.append('page','Smarter Choice Meds — Weight Loss Intake');
+  fetch(ENDPOINT,{method:'POST',body:fd}).then(go2).catch(go2);
 }
 
 render();
